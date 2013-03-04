@@ -1,0 +1,26 @@
+{
+    "name": "neilime/zf2-translator-tools",
+    "type": "library",
+    "description": "Zend Framework 2 module for maintaining translations files",
+    "keywords": ["translations","tools","zf2"],
+    "homepage": "",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Neilime",
+            "homepage": "http://neilime.github.com/zf2-translator-tools",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "2.*",
+        "phpunit/phpunit": "3.7.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "TranslatorTools": "src"
+        },
+        "classmap" : ["Module.php"]
+    }
+}
