@@ -8,7 +8,7 @@ Created by Neilime
 Introduction
 ------------
 
-_TranslatorTools_ is an utility module for maintaining Zend Framework 2 translations files.
+__TranslatorTools__ is an utility module for maintaining Zend Framework 2 translations files.
 
 P.S. If You wish to help me with this project - You are welcome :)
 
@@ -35,7 +35,7 @@ Installation
         "neilime/zf2-translator-tools": "dev-master"
     }
     ```
-2. Now tell composer to download AssetsBundle by running the command:
+2. Now tell composer to download TranslatorTools by running the command:
 
     ```bash
     $ php composer.phar update
@@ -56,7 +56,7 @@ Installation
     );
     ```
     
-# How to use _TranslatorTools_
+# How to use __TranslatorTools__
 
 ## Features
 
