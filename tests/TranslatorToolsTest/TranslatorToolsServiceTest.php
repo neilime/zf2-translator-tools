@@ -5,6 +5,9 @@ class ServiceTest extends \PHPUnit_Framework_TestCase{
 	 * @var array
 	 */
 	private $configuration = array(
+		'translator' => array(
+
+		)
 	);
 
 	/**
@@ -30,5 +33,9 @@ class ServiceTest extends \PHPUnit_Framework_TestCase{
     public function testService(){
     	//Test service instance
     	$this->assertInstanceOf('TranslatorTools\Service\TranslatorToolsService',$this->service);
+    }
+
+    public function testLocale(){
+		$this->assertEquals($this->service->getLocales(),array('fr_FR','en_US'));
     }
 }

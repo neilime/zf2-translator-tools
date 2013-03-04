@@ -28,7 +28,7 @@ class Translator extends \Zend\I18n\Translator\Translator{
 
 		//Remove "*" locale
 		if(($iKey = array_search('*',$aLocales)) !== false)unset($aLocales[$iKey]);
-		return $aLocales;
+		return array_values(array_filter($aLocales));
 	}
 
 	/**

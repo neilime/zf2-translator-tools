@@ -31,7 +31,7 @@ class TranslatorToolsService{
 		if(!isset($aConfiguration['translator']))throw new \InvalidArgumentException('Error in configuration');
 
 		//Initialize translator
-		$this->setTranslator(new \TranslatorTools\I18n\Translator\Translator($aConfiguration['translator']));
+		$this->setTranslator(\TranslatorTools\I18n\Translator\Translator::factory($aConfiguration['translator']));
 
 		if(isset($aConfiguration['locale'])){
 			if(!is_array($aConfiguration['locale']))throw new \InvalidArgumentException(sprintf(

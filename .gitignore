@@ -7,3 +7,4 @@ extras/documentation
 /.settings
 /.buildpath
 /.project
+/composer.lock

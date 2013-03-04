@@ -1,21 +1,32 @@
 <?php
 namespace TranslatorTools\Controller;
 class ToolsController extends \Zend\Mvc\Controller\AbstractActionController{
+
+	public function listLocalesAction(){
+		$oServiceLocator = $this->getServiceLocator();
+
+		//Initialize TranslatorTools service
+		$oTranslatorToolsService = $oServiceLocator->get('TranslatorToolsService');
+
+		$oConsole = $this->getServiceLocator()->get('console');
+
+		$oConsole->writeLine('');
+		$oConsole->writeLine('Defined locales : ', \Zend\Console\ColorInterface::GREEN);
+		$oConsole->writeLine('-------------------------', \Zend\Console\ColorInterface::GRAY);
+		$oConsole->writeLine('');
+
+		foreach($oTranslatorToolsService->getLocales() as $sLocale){
+			$oConsole->write(' * ',\Zend\Console\ColorInterface::GRAY);
+			$oConsole->write($sLocale,\Zend\Console\ColorInterface::LIGHT_BLUE);
+		}
+	}
+
     /**
      * Remove useless translations
      */
 	public function removeTranslationsAction(){
-        $oServiceLocator = $this->getServiceLocator();
-        try{
-            $oModuleManager = $oServiceLocator->get('modulemanager');
-        }
-        catch(\Zend\ServiceManager\Exception\ServiceNotFoundException $oException){
-            return $this->sendError('Cannot get Zend\ModuleManager\ModuleManager instance. Is your application using it?');
-        }
-        $oConsole = $this->getServiceLocator()->get('console');
-
         //Initialize TranslatorTools service
-        $oTranslatorToolsService = $oServiceLocator->get('TranslatorToolsService');
+        $oTranslatorToolsService = $this->getServiceLocator()->get('TranslatorToolsService');
 
         $sLocale = $this->params('locale');
         $sTextDomains = $this->params('text-domains');

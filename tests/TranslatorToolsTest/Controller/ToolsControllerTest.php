@@ -7,6 +7,31 @@ class ToolsControllerTest extends \PHPUnit_Framework_TestCase{
 	 * @var array
 	 */
 	private $configuration = array(
+		'translator' => array(
+			'locale' => 'fr_FR',
+			//'cache' => array('adapter'=> 'Zend\Cache\Storage\Adapter\Memcached'),
+			'translation_file_patterns' => array(
+				array(
+					'type' => 'phparray',
+					'base_dir' => '_files/default',
+					'pattern'  => '%s.php'
+				)
+			),
+			'translation_files' => array(
+				array(
+					'type' => 'phparray',
+					'filename' =>  '_files/other-domain/french-file.php',
+					'locale'  => 'fr_FR',
+					'text_domain' => 'other-domain'
+				),
+				array(
+					'type' => 'phparray',
+					'filename' =>  '_files/other-domain/english-file.php',
+					'locale'  => 'en_US',
+					'text_domain' => 'other-domain'
+				)
+			)
+		)
 	);
 
 	/**
@@ -49,5 +74,18 @@ class ToolsControllerTest extends \PHPUnit_Framework_TestCase{
         	->setRouteMatch($this->routeMatch);
         $this->controller->setEvent($this->event);
         $this->controller->setServiceLocator($oServiceManager);
+    }
+
+    public function testService(){
+    	$oTranslatorToolsService = $this->controller->getServiceLocator()->get('TranslatorToolsService');
+
+    	//Test service instance
+    	$this->assertInstanceOf('TranslatorTools\Service\TranslatorToolsService',$oTranslatorToolsService);
+    }
+
+    public function testListLocales(){
+    	$this->routeMatch->setParam('action', 'listLocales');
+    	$this->controller->dispatch($this->request);
+    	$this->assertEquals(200, $this->controller->getResponse()->getStatusCode());
     }
 }

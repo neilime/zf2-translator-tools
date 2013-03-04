@@ -8,6 +8,15 @@ return array(
 	'console' => array(
 		'router' => array(
 			'routes' => array(
+				'list-locales' => array(
+					'options' => array(
+						'route'    => 'list',
+						'defaults' => array(
+							'controller' => 'TranslatorTools\Controller\Tools',
+							'action' => 'listLocales'
+						)
+					)
+				),
 				'remove-translations' => array(
 					'options' => array(
 						'route'    => 'removeTranslations',
@@ -22,7 +31,7 @@ return array(
 	),
 	'service_manager' => array(
         'factories' => array(
-        	'TranslatorToolsService' => '\TranslatorTools\Factory\ServiceFactory'
+        	'TranslatorToolsService' => '\TranslatorTools\Factory\TranslatorToolsServiceFactory'
         )
     ),
     'translator_tools' => array()
