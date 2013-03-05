@@ -31,6 +31,15 @@ class Translator extends \Zend\I18n\Translator\Translator{
 		return array_values(array_filter($aLocales));
 	}
 
+	public function getKnownTextDomains(){
+		$aTextDomains = array('default');
+		//Retrieve locales from files configuration
+		if(is_array($this->files))foreach($this->files as $sTextDomain => $aFileInfos){
+			$aTextDomains[] = $sTextDomain;
+		}
+		return array_values(array_filter(array_unique($aTextDomains)));
+	}
+
 	/**
 	 * Retrieve messages from files for a given TextDomain and locale
 	 * @param string $sTextDomain

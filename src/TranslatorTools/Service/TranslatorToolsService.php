@@ -123,6 +123,22 @@ class TranslatorToolsService{
 		return $this->locales;
 	}
 
+	/**
+	 * Retrieve all defined messages keys
+	 * @return array
+	 */
+	public function getAvailableMessages(){
+		$aMessagesKeys = array();
+		$oTranslator = $this->getTranslator();
+		$aLocales = $this->getLocales();
+		foreach($this->getTextDomains() as $sTextDomain){
+			foreach($aLocales as $sLocale){
+				$aMessagesKeys = array_merge($aMessagesKeys,array_keys($oTranslator->getMessages($sLocale,$sTextDomain)));
+			}
+		}
+		return array_unique($aMessagesKeys);
+	}
+
 	public function getUselessTranslations(){
 		$oTranslator = $this->getTranslator();
 		$aLocales = $this->getLocales();

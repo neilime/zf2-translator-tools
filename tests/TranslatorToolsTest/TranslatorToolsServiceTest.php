@@ -35,7 +35,15 @@ class ServiceTest extends \PHPUnit_Framework_TestCase{
     	$this->assertInstanceOf('TranslatorTools\Service\TranslatorToolsService',$this->service);
     }
 
-    public function testLocale(){
+    public function testGetLocales(){
 		$this->assertEquals($this->service->getLocales(),array('fr_FR','en_US'));
+    }
+
+    public function testGetTextDomains(){
+    	$this->assertEquals($this->service->getTextDomains(),array('default','other-domain'));
+    }
+
+    public function testGetAvailableMessages(){
+    	$this->assertEquals($this->service->getAvailableMessages(),array());
     }
 }
