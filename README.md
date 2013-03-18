@@ -1,6 +1,8 @@
 TranslatorTools
 =======
 
+__/!\ Work in progress__
+
 [![Build Status](https://travis-ci.org/neilime/zf2-translator-tools.png?branch=master)](https://travis-ci.org/neilime/zf2-translator-tools)
 
 Created by Neilime
