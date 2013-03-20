@@ -11,9 +11,11 @@ class Translator extends \Zend\I18n\Translator\Translator{
 	public function getMessages($sLocale = null,$sTextDomain = 'default'){
 		$sLocale = $sLocale?:$this->getLocale();
 		if(!isset($this->messages[$sTextDomain][$sLocale]))$this->loadMessages($sTextDomain, $sLocale);
-		if($this->messages[$sTextDomain][$sLocale] instanceof \Zend\I18n\Translator\TextDomain)return $this->messages[$sTextDomain][$sLocale]->getArrayCopy();
+
+		if(isset($this->messages[$sTextDomain][$sLocale]) && $this->messages[$sTextDomain][$sLocale] instanceof \Zend\I18n\Translator\TextDomain)return $this->messages[$sTextDomain][$sLocale]->getArrayCopy();
+
 		if(null !== ($sFallbackLocale = $this->getFallbackLocale()) && $sLocale !== $sFallbackLocale)$this->loadMessages($sTextDomain, $sFallbackLocale);
-		return $this->messages[$sTextDomain][$sFallbackLocale] instanceof \Zend\I18n\Translator\TextDomain?$this->messages[$sTextDomain][$sFallbackLocale]->getArrayCopy():array();
+		return isset($this->messages[$sTextDomain][$sLocale]) && $this->messages[$sTextDomain][$sFallbackLocale] instanceof \Zend\I18n\Translator\TextDomain?$this->messages[$sTextDomain][$sFallbackLocale]->getArrayCopy():array();
 	}
 
 	public function getKnownLocales(){
@@ -33,11 +35,21 @@ class Translator extends \Zend\I18n\Translator\Translator{
 
 	public function getKnownTextDomains(){
 		$aTextDomains = array('default');
-		//Retrieve locales from files configuration
-		if(is_array($this->files))foreach($this->files as $sTextDomain => $aFileInfos){
-			$aTextDomains[] = $sTextDomain;
-		}
+		//Retrieve text domains from files configuration
+		if(is_array($this->files))$aTextDomains = array_merge($aTextDomains,array_keys($this->files));
+
+		//Retrieve text domains from patterns configuration
+		if(is_array($this->patterns))$aTextDomains = array_merge($aTextDomains,array_keys($this->patterns));
+
 		return array_values(array_filter(array_unique($aTextDomains)));
+	}
+
+	public function getTranslationFileInfos($sLocale = null,$sTextDomain = 'default'){
+		$sLocale = $sLocale?:$this->getLocale();
+		return array(
+			'pathname' => $sPathName,
+			'type' => $sType
+		);
 	}
 
 	/**

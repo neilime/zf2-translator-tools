@@ -125,18 +125,76 @@ class TranslatorToolsService{
 
 	/**
 	 * Retrieve all defined messages keys
+	 * @param string $sTextDomain
 	 * @return array
 	 */
-	public function getAvailableMessages(){
+	public function getAvailableMessages($sTextDomain){
 		$aMessagesKeys = array();
 		$oTranslator = $this->getTranslator();
-		$aLocales = $this->getLocales();
-		foreach($this->getTextDomains() as $sTextDomain){
-			foreach($aLocales as $sLocale){
-				$aMessagesKeys = array_merge($aMessagesKeys,array_keys($oTranslator->getMessages($sLocale,$sTextDomain)));
+		foreach($this->getLocales() as $sLocale){
+			$aMessagesKeys = array_merge($aMessagesKeys,array_keys($oTranslator->getMessages($sLocale,$sTextDomain)));
+		}
+		return array_values(array_unique($aMessagesKeys));
+	}
+
+	/**
+	 * Retrieve the missing messages for the given text domain and locale
+	 * @param string $sTextDomain
+	 * @param array $sLocale
+	 * @return array
+	 */
+	public function getMissingMessages($sTextDomain = null,array $aLocales = null){
+		$aMissingMessages = array();
+		$aAvailableMessages = $this->getAvailableMessages($sTextDomain);
+		$aLocales = $aLocales?:$this->getLocales();
+		$oTranslator = $this->getTranslator();
+
+		foreach($aLocales as $sLocale){
+			$aMissingMessages[$sLocale] = array_values(array_diff(
+				$aAvailableMessages,
+				array_keys($oTranslator->getMessages($sLocale,$sTextDomain))
+			));
+		}
+		return $aMissingMessages;
+	}
+
+	/**
+	 * Retrieve translation file infos for the given text domain and locale
+	 * @param string $sTextDomain
+	 * @param string $sLocale
+	 * @return array
+	 */
+	public function getTranslationFileInfos($sTextDomain = null,$sLocale = null){
+		return $this->getTranslator()->getTranslationFileInfos($sTextDomain,$sLocale);
+	}
+
+	/**
+	 * Add a translation message for the given text domain and locale
+	 * @param string $sTextDomain
+	 * @param string $sLocale
+	 * @param string $sMessage
+	 * @param string $sTranslation
+	 * @throws \RuntimeException
+	 * @return \TranslatorTools\Service\TranslatorToolsService
+	 */
+	public function addTranslation($sTextDomain = null,$sLocale = null,$sMessage,$sTranslation){
+		$aTranslationFileInfos = $this->getTranslationFileInfos($sTextDomain,$sLocale);
+
+		//Create translation file path tree
+		if(!is_dir($sTranslationDir = dirname($sTranslationFile))){
+			$sCurrentPath = '';
+			foreach(explode(DIRECTORY_SEPARATOR,$sTranslationDir) as $sDirPathPart){
+				//Create current directory if it doesn't exist
+				if(!is_dir($sCurrentPath = $sCurrentPath.DIRECTORY_SEPARATOR.$sDirPathPart)
+				&& !mkdir($sCurrentPath))throw new \RuntimeException('Unable to create directory : '.$sCurrentPath);
 			}
 		}
-		return array_unique($aMessagesKeys);
+
+		//Add translation entry
+		switch($aTranslationFileInfos['type']){
+		}
+
+		return $this;
 	}
 
 	public function getUselessTranslations(){
