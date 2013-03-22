@@ -37,7 +37,41 @@ class Bootstrap{
         ),$aTestConfig);
         static::$serviceManager = new \Zend\ServiceManager\ServiceManager(new \Zend\Mvc\Service\ServiceManagerConfig());
         static::$serviceManager->setService('ApplicationConfig',static::$config)->get('ModuleManager')->loadModules();
+
+        //Copy translation files
+		self::rcopy(__DIR__.'/TranslatorToolsTest/_files/original', __DIR__.'/TranslatorToolsTest/_files/translations');
     }
+
+    /**
+     * @param string $sDirPath
+     */
+    protected static function rmDirectory($sDirPath){
+    	//Empty cache directory except .gitignore
+    	foreach(new \RecursiveIteratorIterator(
+    		new \RecursiveDirectoryIterator($sDirPath, \RecursiveDirectoryIterator::SKIP_DOTS),
+    		\RecursiveIteratorIterator::CHILD_FIRST
+    	) as $oFileinfo){
+    		if($oFileinfo->isDir())rmdir($oFileinfo->getRealPath());
+    		else unlink($oFileinfo->getRealPath());
+    	}
+    	rmdir($sDirPath);
+    }
+
+	/**
+	 * Copies files and non-empty directories
+	 * @param string $sSource
+	 * @param string $sDest
+	 */
+	public static function rcopy($sSource, $sDest){
+		if(file_exists($sDest))self::rmDirectory($sDest);
+		if(is_dir($sSource)){
+			mkdir($sDest);
+			foreach(scandir($sSource) as $sFile){
+				if($sFile != '.' && $sFile != '..')self::rcopy($sSource.DIRECTORY_SEPARATOR.$sFile,$sDest.DIRECTORY_SEPARATOR.$sFile);
+			}
+		}
+		elseif(file_exists($sSource))copy($sSource, $sDest);
+	}
 
     /**
      * @return \Zend\ServiceManager\ServiceManager

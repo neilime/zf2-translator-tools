@@ -139,11 +139,11 @@ class TranslatorToolsService{
 
 	/**
 	 * Retrieve the missing messages for the given text domain and locale
+	 * @param array$aLocales$sLocale
 	 * @param string $sTextDomain
-	 * @param array $sLocale
 	 * @return array
 	 */
-	public function getMissingMessages($sTextDomain = null,array $aLocales = null){
+	public function getMissingMessages(array $aLocales = null,$sTextDomain = null){
 		$aMissingMessages = array();
 		$aAvailableMessages = $this->getAvailableMessages($sTextDomain);
 		$aLocales = $aLocales?:$this->getLocales();
@@ -160,40 +160,39 @@ class TranslatorToolsService{
 
 	/**
 	 * Retrieve translation file infos for the given text domain and locale
-	 * @param string $sTextDomain
 	 * @param string $sLocale
+	 * @param string $sTextDomain
 	 * @return array
 	 */
-	public function getTranslationFileInfos($sTextDomain = null,$sLocale = null){
-		return $this->getTranslator()->getTranslationFileInfos($sTextDomain,$sLocale);
+	public function getTranslationFileInfos($sLocale = null,$sTextDomain = null){
+		return $this->getTranslator()->getTranslationFileInfos($sLocale,$sTextDomain);
 	}
 
 	/**
 	 * Add a translation message for the given text domain and locale
-	 * @param string $sTextDomain
 	 * @param string $sLocale
+	 * @param string $sTextDomain
 	 * @param string $sMessage
 	 * @param string $sTranslation
 	 * @throws \RuntimeException
 	 * @return \TranslatorTools\Service\TranslatorToolsService
 	 */
-	public function addTranslation($sTextDomain = null,$sLocale = null,$sMessage,$sTranslation){
-		$aTranslationFileInfos = $this->getTranslationFileInfos($sTextDomain,$sLocale);
+	public function writeTranslations(array $aMessages,$sLocale = null,$sTextDomain = null){
 
-		//Create translation file path tree
-		if(!is_dir($sTranslationDir = dirname($sTranslationFile))){
-			$sCurrentPath = '';
-			foreach(explode(DIRECTORY_SEPARATOR,$sTranslationDir) as $sDirPathPart){
-				//Create current directory if it doesn't exist
-				if(!is_dir($sCurrentPath = $sCurrentPath.DIRECTORY_SEPARATOR.$sDirPathPart)
-				&& !mkdir($sCurrentPath))throw new \RuntimeException('Unable to create directory : '.$sCurrentPath);
+		//Create translation file if not exists
+		$aTranslationFileInfos = $this->getTranslationFileInfos($sLocale,$sTextDomain);
+		if(!file_exists($aTranslationFileInfos['filename'])){
+			if(!is_dir($sTranslationDir = dirname($aTranslationFileInfos['filename']))){
+				$sCurrentPath = '';
+				foreach(explode(DIRECTORY_SEPARATOR,$sTranslationDir) as $sDirPathPart){
+					//Create current directory if it doesn't exist
+					if(!is_dir($sCurrentPath = $sCurrentPath.DIRECTORY_SEPARATOR.$sDirPathPart)
+					&& !mkdir($sCurrentPath))throw new \RuntimeException('Unable to create directory : '.$sCurrentPath);
+				}
 			}
+			file_put_contents($aTranslationFileInfos['filename'], '');
 		}
-
-		//Add translation entry
-		switch($aTranslationFileInfos['type']){
-		}
-
+		$this->getTranslator()->writeTranslations($aMessages,$sLocale,$sTextDomain);
 		return $this;
 	}
 
